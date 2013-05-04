@@ -30,6 +30,19 @@ Client = function(socket) {
         Chat.send(this.nick + " is now known as " + name + ".\n", "! ");
 
         this.nick = name;
+      },
+
+      // Kick another client.
+      kick: function(nick) {
+        Chat.send(this.nick + " kicked " + nick + "!\n", "! ");
+
+        for(var i in Chat.clients) {
+          var client = Chat.clients[i];
+
+          if(client.nick == nick) break;
+        }
+
+        Chat.disconnect(client);
       }
     }
   }
