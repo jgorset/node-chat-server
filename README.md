@@ -12,7 +12,7 @@ Connect via telnet:
 
     $ telnet localhost 8000
 
-Type anything to chat, or prefix it with "/" to send a command.
+Type anything to chat, or prefix it with `/` to send a command.
 
 ### Commands
 
