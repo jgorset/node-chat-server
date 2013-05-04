@@ -3,10 +3,18 @@ net = require("net");
 Client = function(socket) {
 
   return {
+    // A string describing the client's IP address.
     ip: socket.remoteAddress,
+
+    // A string describing the client's nickname.
     nick: socket.remoteAddress,
+
+    // A Socket instance.
     socket: socket,
+    // Commands that the client may run.
     commands: {
+
+      // Change nickname.
       nick: function(name) {
         Chat.send(this.nick + " is now known as " + name + ".\n", "! ");
 
