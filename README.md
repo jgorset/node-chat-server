@@ -6,7 +6,7 @@ Everyone should have made a chat server in Node.js. This is mine.
 
 Run the server:
 
-    $ node chat.js
+    $ node chat.js 8000
 
 Connect via telnet:
 

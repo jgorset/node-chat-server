@@ -1,5 +1,7 @@
 net = require("net");
 
+port = process.argv[2] || 8000
+
 Client = function(socket) {
 
   return {
@@ -124,4 +126,4 @@ server = net.Server(function(socket) {
   });
 });
 
-server.listen(8000);
+server.listen(port);
