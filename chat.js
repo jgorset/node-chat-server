@@ -1,12 +1,21 @@
 net    = require("net");
 
-Client = require("client").Client;
-Chat   = require("chat").Chat;
+config = require("./config");
+client = require("client");
+chat   = require("chat");
+
+Client = client.Client;
+Chat   = chat.Chat;
 
 port = process.argv[2] || 8000
 
 server = net.Server(function(socket) {
+
   var client = new Client(socket);
+
+  client.administrator = config.administrators.some(function(administrator) {
+    return administrator == client.ip;
+  });
 
   Chat.connect(client);
 
