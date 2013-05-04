@@ -94,6 +94,8 @@ server = net.Server(function(socket) {
 
       if(client.commands[command]) {
         client.commands[command].apply(client, parameters);
+      } else {
+        client.send("Command not found: " + command + "\n", "! ");
       }
     } else {
       Chat.send(message, client.nick + "> ");
