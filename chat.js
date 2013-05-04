@@ -47,7 +47,7 @@ server = net.Server(function(socket) {
     console.log("Ignoring error: " + error);
   });
 
-  socket.on("close", function(had_error) {
+  socket.on("close", function(hadError) {
     Chat.disconnect(client);
   });
 });
