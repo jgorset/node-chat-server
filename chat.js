@@ -1,92 +1,9 @@
-net = require("net");
+net    = require("net");
+
+Client = require("client").Client;
+Chat   = require("chat").Chat;
 
 port = process.argv[2] || 8000
-
-Client = function(socket) {
-
-  return {
-    // A string describing the client's IP address.
-    ip: socket.remoteAddress,
-
-    // A string describing the client's nickname.
-    nick: socket.remoteAddress,
-
-    // A Socket instance.
-    socket: socket,
-
-    // Send the given message to the client.
-    //
-    // message - A string describing a message.
-    // prefix  - A String describing how to prefix the message. Defaults to "> ".
-    send: function(message, prefix) {
-      if(this.socket.writable) {
-        this.socket.write(prefix + message);
-      }
-    },
-
-    // Commands that the client may run.
-    commands: {
-
-      // Change nickname.
-      nick: function(name) {
-        Chat.send(this.nick + " is now known as " + name + ".\n", "! ");
-
-        this.nick = name;
-      },
-
-      // Kick another client.
-      kick: function(nick) {
-        Chat.send(this.nick + " kicked " + nick + "!\n", "! ");
-
-        for(var i in Chat.clients) {
-          var client = Chat.clients[i];
-
-          if(client.nick == nick) break;
-        }
-
-        Chat.disconnect(client);
-      }
-    }
-  }
-}
-
-Chat = {
-  clients: [],
-
-  // Connect the given client.
-  //
-  // client - A Client instance.
-  connect: function(client) {
-    this.clients.push(client);
-
-    this.send(client.nick + " connected.\n", "+ ");
-  },
-
-  // Disconnect the given client.
-  //
-  // client - A Client instance.
-  disconnect: function(client) {
-    var index = this.clients.indexOf(client);
-
-    this.clients.splice(index, 1);
-
-    this.send(client.nick + " disconnected.\n", "- ");
-  },
-
-  // Send the given message to all clients.
-  //
-  // message - A string describing a message.
-  // prefix  - A String describing how to prefix the message. Defaults to "> ".
-  send: function(message, prefix) {
-    if(!prefix) prefix = "> "
-
-    for(var i in this.clients) {
-      var client = this.clients[i];
-
-      client.send(message, prefix);
-    }
-  }
-}
 
 server = net.Server(function(socket) {
   var client = new Client(socket);
