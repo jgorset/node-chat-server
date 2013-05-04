@@ -1,47 +1,57 @@
 net = require("net");
 
+Client = function(socket) {
+
+  return {
+    ip: socket.remoteAddress,
+    socket: socket
+  }
+}
+
 Chat = {
-  peers: [],
+  clients: [],
 
-  // Connect the given socket.
+  // Connect the given client.
   //
-  // socket - A Socket instance.
-  connect: function(socket) {
-    this.peers.push(socket);
+  // client - A Client instance.
+  connect: function(client) {
+    this.clients.push(client);
 
-    this.send(socket.remoteAddress + " connected.\n", "+ ");
+    this.send(client.ip + " connected.\n", "+ ");
   },
 
-  // Disconnect the given socket.
+  // Disconnect the given client.
   //
-  // socket - A Socket instance.
-  disconnect: function(socket) {
-    var index = this.peers.indexOf(socket);
+  // client - A Client instance.
+  disconnect: function(client) {
+    var index = this.clients.indexOf(client);
 
-    this.peers.splice(index, 1);
+    this.clients.splice(index, 1);
 
-    this.send(socket.remoteAddress + " disconnected.\n", "- ");
+    this.send(client.ip + " disconnected.\n", "- ");
   },
 
-  // Send the given message to peers.
+  // Send the given message to all clients.
   //
   // message - A string describing a message.
   // prefix  - A String describing how to prefix the message. Defaults to "> ".
   send: function(message, prefix) {
     if(!prefix) prefix = "> "
 
-    for(var i in this.peers) {
-      var peer = this.peers[i];
+    for(var i in this.clients) {
+      var client = this.clients[i];
 
-      if(peer.writable) {
-        peer.write(prefix + message);
+      if(client.socket.writable) {
+        client.socket.write(prefix + message);
       }
     }
   }
 }
 
 server = net.Server(function(socket) {
-  Chat.connect(socket);
+  var client = new Client(socket);
+
+  Chat.connect(client);
 
   socket.on("data", function(data) {
     message = data.toString();
@@ -51,7 +61,7 @@ server = net.Server(function(socket) {
 
       Chat.command(command);
     } else {
-      Chat.send(message, socket.remoteAddress + "> ");
+      Chat.send(message, client.ip + "> ");
     }
   });
 
@@ -60,7 +70,7 @@ server = net.Server(function(socket) {
   });
 
   socket.on("close", function(had_error) {
-    Chat.disconnect(socket);
+    Chat.disconnect(client);
   });
 });
 
