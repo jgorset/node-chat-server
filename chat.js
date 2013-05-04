@@ -11,6 +11,17 @@ Client = function(socket) {
 
     // A Socket instance.
     socket: socket,
+
+    // Send the given message to the client.
+    //
+    // message - A string describing a message.
+    // prefix  - A String describing how to prefix the message. Defaults to "> ".
+    send: function(message, prefix) {
+      if(this.socket.writable) {
+        this.socket.write(prefix + message);
+      }
+    },
+
     // Commands that the client may run.
     commands: {
 
@@ -57,9 +68,7 @@ Chat = {
     for(var i in this.clients) {
       var client = this.clients[i];
 
-      if(client.socket.writable) {
-        client.socket.write(prefix + message);
-      }
+      client.send(message, prefix);
     }
   }
 }
