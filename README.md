@@ -1,6 +1,6 @@
 # Node Chat Server
 
-Everyone should have made a chat server in Node.js. This is mine.
+Everyone has made a chat server in Node.js. This is mine.
 
 ## Usage
 
