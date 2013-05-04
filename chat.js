@@ -4,7 +4,15 @@ Client = function(socket) {
 
   return {
     ip: socket.remoteAddress,
-    socket: socket
+    nick: socket.remoteAddress,
+    socket: socket,
+    commands: {
+      nick: function(name) {
+        Chat.send(this.nick + " is now known as " + name + ".\n", "! ");
+
+        this.nick = name;
+      }
+    }
   }
 }
 
@@ -17,7 +25,7 @@ Chat = {
   connect: function(client) {
     this.clients.push(client);
 
-    this.send(client.ip + " connected.\n", "+ ");
+    this.send(client.nick + " connected.\n", "+ ");
   },
 
   // Disconnect the given client.
@@ -28,7 +36,7 @@ Chat = {
 
     this.clients.splice(index, 1);
 
-    this.send(client.ip + " disconnected.\n", "- ");
+    this.send(client.nick + " disconnected.\n", "- ");
   },
 
   // Send the given message to all clients.
@@ -57,11 +65,21 @@ server = net.Server(function(socket) {
     message = data.toString();
 
     if(message[0] == "/") {
-      command = message.substr(1, data.length);
+      command = message.substr(1, message.length);
 
-      Chat.command(command);
+      command = command.replace("\r", "");
+      command = command.replace("\n", "");
+
+      components = command.split(" ");
+
+      command    = components[0];
+      parameters = components.splice(1, components.length);
+
+      if(client.commands[command]) {
+        client.commands[command].apply(client, parameters);
+      }
     } else {
-      Chat.send(message, client.ip + "> ");
+      Chat.send(message, client.nick + "> ");
     }
   });
 
