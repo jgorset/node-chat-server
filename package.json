@@ -1,0 +1,5 @@
+{
+  "name": "node-chat-server",
+  "description": "Everyone has made a chat server in Node.js. This is mine.",
+  "version": "0.1"
+}
