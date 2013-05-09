@@ -17,6 +17,7 @@ Type anything to chat, or prefix it with `/` to send a command.
 ### Commands
 
 * `/nick <name>` - Change your nickname.
+* `/disconnect`  - Disconnect from the server.
 * `/kick <name>` - Kick the given user.
 
 ## I love you
